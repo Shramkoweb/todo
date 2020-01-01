@@ -28,7 +28,7 @@ class TodoItem extends PureComponent {
 
     render() {
         const importantClasses = 'font-weight-bold text-info';
-        const {label = false} = this.props;
+        const {label, onDeleteButtonClick} = this.props;
         const {important, complete} = this.state;
 
         return (
@@ -43,13 +43,18 @@ class TodoItem extends PureComponent {
                       label
               }
           </span>
-                <button type="button"
-                        onClick={this._handleDoneButtonClick}
-                        className="ml-auto flex-shrink-0 mr-2 todo-app__item-button btn btn-outline-success btn-sm">
+                <button
+                    onClick={this._handleDoneButtonClick}
+                    type="button"
+                    className="ml-auto flex-shrink-0 mr-2 todo-app__item-button btn btn-outline-success btn-sm">
+
                     <i className="fa fa-exclamation"/>
                 </button>
 
-                <button type="button" className="flex-shrink-0 todo-app__item-button btn btn-outline-danger btn-sm">
+                <button
+                    onClick={onDeleteButtonClick}
+                    type="button"
+                    className="flex-shrink-0 todo-app__item-button btn btn-outline-danger btn-sm">
                     <i className="fa fa-trash-o"/>
                 </button>
             </div>
