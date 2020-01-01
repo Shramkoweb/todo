@@ -23,13 +23,15 @@ class App extends PureComponent {
         this.state = {
             todoData: mockTodoLabels.map((item, index) => {
                 return this._createTodoItem(item, index % 2)
-            })
+            }),
+            searchPhrase: ''
         };
 
         this._deleteTodoHandler = this._deleteTodoHandler.bind(this);
         this._addTodoHandler = this._addTodoHandler.bind(this);
         this._toggleTodoDoneStateHandler = this._toggleTodoDoneStateHandler.bind(this);
         this._toggleTodoImportantStateHandler = this._toggleTodoImportantStateHandler.bind(this);
+        this._searchInputChange = this._searchInputChange.bind(this);
     }
 
     _createTodoItem(label, isImportant = false) {
@@ -90,8 +92,21 @@ class App extends PureComponent {
         });
     }
 
+    _searchInputChange(searchPhrase) {
+        this.setState({searchPhrase});
+    }
+
+    searchTodoByTerm(initialState, searchPhrase) {
+        if (searchPhrase === "") {
+            return initialState;
+        }
+
+        return initialState.filter((item) => item.label.toLowerCase().indexOf(searchPhrase.toLowerCase()) > -1);
+    }
+
     render() {
-        const {todoData} = this.state;
+        const {todoData, searchPhrase} = this.state;
+        const visibleItems = this.searchTodoByTerm(todoData, searchPhrase);
         const doneTodosAmount = todoData.filter((item) => item.done).length;
         const todosAmount = todoData.length - doneTodosAmount;
 
@@ -99,12 +114,14 @@ class App extends PureComponent {
             <div className="todo-app mx-auto mt-4">
                 <AppHeader toDo={todosAmount} done={doneTodosAmount}/>
                 <div className="d-flex mt-2 mb-2">
-                    <SearchPanel/>
+                    <SearchPanel
+                        onSearchChange={this._searchInputChange}
+                    />
                     <ItemStatusFilter/>
                 </div>
 
                 <TodoList
-                    todos={todoData}
+                    todos={visibleItems}
                     onDeleteButtonClick={this._deleteTodoHandler}
                     onToggleDone={this._toggleTodoDoneStateHandler}
                     onToggleImportant={this._toggleTodoImportantStateHandler}
