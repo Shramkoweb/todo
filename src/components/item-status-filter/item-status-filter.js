@@ -1,23 +1,39 @@
-import React, {PureComponent} from 'react';
+import React from 'react';
 
 import './item-status-filter.css';
 
-class ItemStatusFilter extends PureComponent {
-    render() {
+const filters = [
+    {name: 'All'},
+    {name: 'Active'},
+    {name: 'Done'}
+];
+
+const ItemStatusFilter = (props) => {
+    const {filter, onFilterChange} = props;
+
+    const filterElements = filters.map((item, index) => {
+        const isActive = item.name.toLowerCase() === filter;
+        const classNames = `btn btn-secondary ${isActive ? 'active' : ''}`;
+
         return (
-            <div className="btn-group btn-group-toggle" data-toggle="buttons">
-                <label className="btn btn-secondary active">
-                    <input type="radio" name="options" id="filter-all" defaultChecked/> All
-                </label>
-                <label className="btn btn-secondary">
-                    <input type="radio" name="options" id="filter-active"/> Active
-                </label>
-                <label className="btn btn-secondary">
-                    <input type="radio" name="options" id="filter-done"/> Done
-                </label>
-            </div>
+            <label key={`${index}-label`} className={classNames}>
+                <input
+                    onChange={(evt) => onFilterChange(evt.target.id)}
+                    type="radio"
+                    name="options"
+                    id={item.name.toLowerCase()}
+                    checked={isActive}
+                />
+                {item.name}
+            </label>
         );
-    }
+    });
+
+    return (
+        <div className="btn-group btn-group-toggle" data-toggle="buttons">
+            {filterElements}
+        </div>
+    );
 };
 
 export default ItemStatusFilter;

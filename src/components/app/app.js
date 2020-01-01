@@ -24,7 +24,8 @@ class App extends PureComponent {
             todoData: mockTodoLabels.map((item, index) => {
                 return this._createTodoItem(item, index % 2)
             }),
-            searchPhrase: ''
+            searchPhrase: '',
+            filter: 'all',
         };
 
         this._deleteTodoHandler = this._deleteTodoHandler.bind(this);
@@ -96,6 +97,10 @@ class App extends PureComponent {
         this.setState({searchPhrase});
     }
 
+    onFilterChange = (filter) => {
+        this.setState({filter});
+    };
+
     searchTodoByTerm(initialState, searchPhrase) {
         if (searchPhrase === "") {
             return initialState;
@@ -104,9 +109,20 @@ class App extends PureComponent {
         return initialState.filter((item) => item.label.toLowerCase().indexOf(searchPhrase.toLowerCase()) > -1);
     }
 
+
+    filterItems(items, filter) {
+        if (filter === 'all') {
+            return items;
+        } else if (filter === 'active') {
+            return items.filter((item) => (!item.done));
+        } else if (filter === 'done') {
+            return items.filter((item) => item.done);
+        }
+    }
+
     render() {
-        const {todoData, searchPhrase} = this.state;
-        const visibleItems = this.searchTodoByTerm(todoData, searchPhrase);
+        const {todoData, searchPhrase, filter} = this.state;
+        const visibleItems = this.searchTodoByTerm(this.filterItems(todoData, filter), searchPhrase);
         const doneTodosAmount = todoData.filter((item) => item.done).length;
         const todosAmount = todoData.length - doneTodosAmount;
 
@@ -117,7 +133,10 @@ class App extends PureComponent {
                     <SearchPanel
                         onSearchChange={this._searchInputChange}
                     />
-                    <ItemStatusFilter/>
+                    <ItemStatusFilter
+                        filter={filter}
+                        onFilterChange={this.onFilterChange}
+                    />
                 </div>
 
                 <TodoList
