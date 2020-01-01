@@ -1,65 +1,47 @@
-import React, {PureComponent} from "react";
+import React from "react";
 
 import './todo-item.css';
 
-class TodoItem extends PureComponent {
-    constructor(props) {
-        super(props);
-        this._handleLabelClick = this._handleLabelClick.bind(this);
-        this._handleDoneButtonClick = this._handleDoneButtonClick.bind(this);
+const TodoItem = (props) => {
+    const {
+        done,
+        important,
+        label,
+        onDeleteButtonClick,
+        onToggleDone,
+        onToggleImportant,
+    } = props;
 
-        this.state = {
-            complete: false,
-            important: false
-        };
-    }
+    const importantClasses = 'font-weight-bold text-info';
 
-    _handleLabelClick() {
-        this.setState(({complete}) => ({
-            complete: !complete
-        }))
-    }
-
-    _handleDoneButtonClick() {
-        this.setState(({important}) => ({
-            important: !important
-        }))
-    }
-
-    render() {
-        const importantClasses = 'font-weight-bold text-info';
-        const {label, onDeleteButtonClick} = this.props;
-        const {important, complete} = this.state;
-
-        return (
-            <div className="d-flex align-items-center">
+    return (
+        <div className="d-flex align-items-center">
           <span
-              onClick={this._handleLabelClick}
+              onClick={onToggleDone}
               className={important ? importantClasses : ""}>
               {
-                  complete ?
+                  done ?
                       <del>{label}</del>
                       :
                       label
               }
           </span>
-                <button
-                    onClick={this._handleDoneButtonClick}
-                    type="button"
-                    className="ml-auto flex-shrink-0 mr-2 todo-app__item-button btn btn-outline-success btn-sm">
+            <button
+                onClick={onToggleImportant}
+                type="button"
+                className="ml-auto flex-shrink-0 mr-2 todo-app__item-button btn btn-outline-success btn-sm">
 
-                    <i className="fa fa-exclamation"/>
-                </button>
+                <i className="fa fa-exclamation"/>
+            </button>
 
-                <button
-                    onClick={onDeleteButtonClick}
-                    type="button"
-                    className="flex-shrink-0 todo-app__item-button btn btn-outline-danger btn-sm">
-                    <i className="fa fa-trash-o"/>
-                </button>
-            </div>
-        );
-    }
+            <button
+                onClick={onDeleteButtonClick}
+                type="button"
+                className="flex-shrink-0 todo-app__item-button btn btn-outline-danger btn-sm">
+                <i className="fa fa-trash-o"/>
+            </button>
+        </div>
+    );
 };
 
 export default TodoItem;
